@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
+from django.template.loader import render_to_string
 
 from .fields import OrderField
 
@@ -55,6 +56,11 @@ class Course(models.Model):
     created = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Создан'
+    )
+    students = models.ManyToManyField(
+        User,
+        related_name='courses_joined',
+        blank=True,
     )
 
     class Meta:
@@ -146,6 +152,12 @@ class ItemBase(models.Model):
     def __str__(self):
         return self.title
 
+    def render(self):
+        return render_to_string(
+            f'courses/content/{self._meta.model_name}.html',
+            {'item': self}
+        )
+
 
 class Text(ItemBase):
     content = models.TextField()
@@ -165,6 +177,7 @@ class Image(ItemBase):
 
 class Video(ItemBase):
     url = models.URLField()
+
 
 
 

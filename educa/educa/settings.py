@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from django.core.management.utils import get_random_secret_key
+from django.urls import reverse_lazy
 from pathlib import Path
 
 
@@ -20,6 +21,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'students.apps.StudentsConfig',
+    'embed_video',
 ]
 
 MIDDLEWARE = [
@@ -92,4 +95,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = reverse_lazy('student_course_list')
