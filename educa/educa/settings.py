@@ -14,6 +14,7 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 INSTALLED_APPS = [
+    "daphne",
     "courses.apps.CoursesConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'redisboard',
     'rest_framework',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +66,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "educa.wsgi.application"
+
+ASGI_APPLICATION = 'educa.asgi.application'
 
 
 DATABASES = {
@@ -124,5 +128,15 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
+}
+
+# конфигурация доступных для проекта канальных слоев
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
 }
 
