@@ -42,6 +42,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'courses.middleware.subdomain_course_middleware',
 ]
 
 INTERNAL_IPS = [
@@ -171,4 +172,7 @@ if DEBUG is False:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

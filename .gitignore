@@ -166,3 +166,5 @@ static
 educa.key
 educa.crt
 /educa/uwsgi_app.sock
+/educa/daphne.sock
+/educa/daphne.sock.lock
