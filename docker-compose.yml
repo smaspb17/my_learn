@@ -1,0 +1,62 @@
+services:
+
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  cache:
+    image: redis:5.0.8
+    restart: always
+    volumes:
+      - ./data/cache:/data
+
+  daphne:
+    build: ./educa/
+    working_dir: /code/educa/
+    command: ["../wait-for-it.sh", "db:5432", "--",
+              "daphne", "-u", "/code/educa/daphne.sock",
+              "educa.asgi:application"]
+    restart: always
+    volumes:
+      - .:/code
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+      - cache
+
+  web:
+    build: ./educa/
+    command: [ "./wait-for-it.sh", "db:5432", "--",
+               "uwsgi", "--ini", "/code/config/uwsgi/uwsgi.ini" ]
+    restart: always
+    volumes:
+      - .:/code
+    environment:
+    - POSTGRES_DB=postgres
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+      - cache
+
+  nginx:
+    image: nginx
+    restart: always
+    volumes:
+      - ./config/nginx:/etc/nginx/templates
+      - .:/code
+    ports:
+      - "80:80"
+      - "443:443"
+
+
+
